@@ -4,6 +4,7 @@ from flask import request,jsonify
 import json
 import requests
 import re
+import config
 
 app = Flask(__name__)
 
@@ -12,8 +13,8 @@ regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
 class Mailapp:
 
 	def __init__(self):
-		self.SG_KEY = "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"
-		self.MG_KEY = "f0121fc3d8979f25b2e9e0e7b4235a2d-1553bd45-d99c6cfb"
+		self.MG_KEY = ""
+		self.SG_KEY = ""
 		self.DUMMY_KEY = "abcd1234"
 		self.to_name = "Receiver"
 		self.to_email = "muzztestmuzz@gmail.com"
@@ -30,7 +31,7 @@ class Mailapp:
 			return False
 
 	def send_sendgrid(self):
-		url = "https://api.sendgrid.com/v3/mail/send"
+		url = config.SG_URL
 		payload = "{\"personalizations\":[{\"to\":[{\"email\":\""+self.to_email+"\",\"name\":\""+self.to_name+"\"}]}], \
 		\"from\":{\"email\":\""+self.from_email+"\",\"name\":\""+self.from_name+"\"}, \
 		\"reply_to\":{\"email\":\""+self.from_email+"\",\"name\":\""+self.from_name+"\"}, \
@@ -44,7 +45,7 @@ class Mailapp:
 
 	def send_mailgun(self):
 		return requests.post(
-			"https://api.mailgun.net/v3/sandboxdba84c44713f4adeae711693c5079b3d.mailgun.org/messages",
+			config.MG_URL,
 			auth=("api", self.MG_KEY),
 			data={
 				"to": [self.to_name+"<"+self.to_email+">"],
@@ -115,6 +116,9 @@ class Mailapp:
 			self.MG_KEY = self.DUMMY_KEY
 		elif self.setdown == "SENDGRID":
 			self.SG_KEY = self.DUMMY_KEY
+		elif self.setdown == "default":
+			self.MG_KEY = config.MG_KEY
+			self.SG_KEY = config.SG_KEY
 
 		response = self.send_mailgun()
 		if(response.ok==True):

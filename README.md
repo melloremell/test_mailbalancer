@@ -42,9 +42,9 @@ There are few response you will get after running the API. The response are in J
 
 #DEPLOYMENT
 
-MailBalancer is a in Docker container. You can pull docker at: " "
-You can build it with : "docker build --rm -t mbtest:latest ."
-You can run it with : "docker run -p 5000:5000 mbtest"
+MailBalancer is a in Docker container. You can pull docker at: "docker run -p 5000:5000 melloremell/mailbalancer"
+You can build it with : "docker build --rm -t melloremell/mailbalancer:latest ."
+You can run it with : "docker run -p 5000:5000 melloremell/mailbalancer"
 You can change 5000 to any port you desire and make sure the port is not blocked
 
 #ENDPOINT
@@ -73,5 +73,5 @@ via SendGrid. You must set MailGun to down. This is the example to force sending
 
 #SOURCE
 
-The source code is at: ""
+The source code is at: "https://github.com/melloremell/mailbalancer"
 Feel free to use it with your own MailGun and SendGrid Key
