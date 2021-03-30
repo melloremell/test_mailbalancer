@@ -8,7 +8,6 @@ import config
 
 app = Flask(__name__)
 
-regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
 
 class Mailapp:
 
@@ -25,10 +24,7 @@ class Mailapp:
 		self.setdown = "default"
 
 	def echeck(self,email):
-		if(re.search(regex, email)):
-			return True
-		else:
-			return False
+		return bool(re.search(r"^[\w\.\+\-]+\@[\w]+\.[a-z]{2,3}$", email))
 
 	def send_sendgrid(self):
 		url = config.SG_URL
@@ -82,9 +78,9 @@ class Mailapp:
 			params['setdown'] = 'default'
 
 		#check empty string
-		if params['to'] == '' or self.echeck(params['to']):
+		if params['to'] == '' or not self.echeck(params['to']):
 			return "1"
-		elif params['from'] == '' or self.echeck(params['from']):
+		elif params['from'] == '' or not self.echeck(params['from']):
 			return "2"
 		elif params['body'] == '':
 			return "3"
@@ -94,10 +90,9 @@ class Mailapp:
 			params['from_name'] = 'Sender'
 		elif params['subject'] == '':
 			params['subject'] = 'No Subject'
-		elif params['setdown'] == '' or \
-		params['setdown'] != 'default' or \
-		params['setdown'] != 'MAILGUN' or \
-		params['setdown'] != 'SENDGRID':
+		elif params['setdown'] != 'MAILGUN' and \
+		params['setdown'] != 'SENDGRID' and \
+		params['setdown'] != 'default':
 			params['setdown'] = 'default'
 
 		self.to_name = params['to_name']
@@ -114,8 +109,10 @@ class Mailapp:
 	def sending_mail(self):
 		if self.setdown == "MAILGUN":
 			self.MG_KEY = self.DUMMY_KEY
+			self.SG_KEY = config.SG_KEY
 		elif self.setdown == "SENDGRID":
 			self.SG_KEY = self.DUMMY_KEY
+			self.MG_KEY = config.MG_KEY
 		elif self.setdown == "default":
 			self.MG_KEY = config.MG_KEY
 			self.SG_KEY = config.SG_KEY
