@@ -73,5 +73,5 @@ via SendGrid. You must set MailGun to down. This is the example to force sending
 
 #SOURCE
 
-The source code is at: "https://github.com/melloremell/mailbalancer"
+The source code is at: "https://github.com/melloremell/test_mailbalancer"
 Feel free to use it with your own MailGun and SendGrid Key
